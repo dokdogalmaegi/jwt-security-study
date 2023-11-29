@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import jakarta.annotation.PostConstruct
 import jakarta.servlet.http.HttpServletRequest
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -28,6 +29,8 @@ class JwtConfig(
     }
 
     fun createToken(username: String, roles: List<String>): String {
+        logger.info { "createToken username: $username, roles: $roles" }
+
         val now = Date()
 
         return Jwts.builder()
@@ -54,5 +57,21 @@ class JwtConfig(
         return token.startsWith("Bearer ").let {
             if (!it) null else token.substring(7)
         }
+    }
+
+    fun validateToken(token: String): Boolean {
+        return try {
+            val parseSignedClaims =
+                Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.toByteArray())).build().parseSignedClaims(token)
+
+            return parseSignedClaims.payload.expiration.before(Date())
+        } catch (e: Exception) {
+            logger.error(e) { "validateToken error" }
+            false
+        }
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
     }
 }
