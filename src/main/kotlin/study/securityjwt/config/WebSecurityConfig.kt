@@ -10,12 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
-class WebSecurityConfig {
+class WebSecurityConfig(private val jwtConfig: JwtConfig) {
 
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
@@ -32,7 +33,10 @@ class WebSecurityConfig {
             .sessionManagement {
                 it
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            }
+            }.addFilterAt(
+                JwtAuthenticationFilter(jwtConfig),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
 
         return httpSecurity.build()
     }
