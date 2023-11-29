@@ -20,9 +20,9 @@ class WebSecurityConfig {
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer {
-                it
-                    .ignoring()
-                    .requestMatchers("/h2-console/**")
+            it
+                .ignoring()
+                .requestMatchers("/h2-console/**")
         }
     }
 
@@ -38,5 +38,5 @@ class WebSecurityConfig {
     }
 
     @Bean
-    fun bCryptPasswordEncoder(): BCryptPasswordEncoder =  BCryptPasswordEncoder()
+    fun bCryptPasswordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
 }
