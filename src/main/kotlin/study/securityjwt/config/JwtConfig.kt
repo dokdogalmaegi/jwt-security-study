@@ -17,7 +17,7 @@ class JwtConfig(
     private var secretKey: String,
 
     @Value(value = "\${JWT_EXPIRE_TIME}")
-    private var expireTime: Long = 0L,
+    private val expireTime: Long = 0L,
 
     private val userDetailsService: UserDetailsService
 ) {
