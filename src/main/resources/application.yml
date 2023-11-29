@@ -12,3 +12,9 @@ spring:
       jdbc-url: jdbc:h2:tcp://localhost/~/test
       username: sa
       password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
