@@ -40,4 +40,10 @@ class UserServiceImpl(
 
         return UserData(findUser.id, findUser.username, findUser.userRoleList)
     }
+
+    override fun getAllUser(): List<UserData> {
+        return userRepository.findAll().map {
+            UserData(it.id, it.username, it.userRoleList)
+        }
+    }
 }

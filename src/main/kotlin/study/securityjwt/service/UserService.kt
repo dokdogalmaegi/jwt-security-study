@@ -11,4 +11,6 @@ interface UserService {
     fun signIn(username: String, password: String): User
 
     fun getUserInfo(authentication: Authentication): UserData
+
+    fun getAllUser(): List<UserData>
 }
