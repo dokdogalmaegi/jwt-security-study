@@ -64,7 +64,7 @@ class JwtConfig(
             val parseSignedClaims =
                 Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.toByteArray())).build().parseSignedClaims(token)
 
-            return parseSignedClaims.payload.expiration.before(Date())
+            return parseSignedClaims.payload.expiration.after(Date())
         } catch (e: Exception) {
             logger.error(e) { "validateToken error" }
             false

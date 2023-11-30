@@ -27,7 +27,8 @@ class User(
 ) : UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long = 0L
+    var id: Long = 0L
+        private set
 
     @Enumerated(value = EnumType.STRING)
     var userRoleList: MutableList<UserRole> = mutableListOf(UserRole.USER)
