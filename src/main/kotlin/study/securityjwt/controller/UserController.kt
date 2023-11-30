@@ -47,6 +47,15 @@ class UserController(
         return userData
     }
 
+    @GetMapping("/all")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
+    fun getAllUserInfo(authentication: Authentication): List<UserData> {
+        val requestingUser = userService.getUserInfo(authentication)
+        logger.info { "${requestingUser.username} 님이 모든 유저의 정보를 조회하였습니다." }
+
+        return userService.getAllUser()
+    }
+
     companion object {
         private val logger = KotlinLogging.logger {}
     }
