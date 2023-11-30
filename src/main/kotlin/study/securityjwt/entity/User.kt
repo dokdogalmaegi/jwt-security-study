@@ -30,8 +30,16 @@ class User(
     private val id: Long = 0L
 
     @Enumerated(value = EnumType.STRING)
-    private val userRole: UserRole = UserRole.USER
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = mutableListOf(SimpleGrantedAuthority(userRole.value))
+    var userRoleList: MutableList<UserRole> = mutableListOf(UserRole.USER)
+        private set
+
+    fun addRole(userRole: UserRole) {
+        require(!userRoleList.contains(userRole)) { "이미 존재하는 Role은 추가할 수 없습니다." }
+
+        userRoleList.add(userRole)
+    }
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = userRoleList.map { SimpleGrantedAuthority(it.value) }.toMutableList()
 
     override fun getPassword(): String = password
 

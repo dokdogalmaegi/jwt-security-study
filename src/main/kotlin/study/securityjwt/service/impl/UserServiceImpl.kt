@@ -1,5 +1,6 @@
 package study.securityjwt.service.impl
 
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import study.securityjwt.dto.UserRequest
@@ -21,5 +22,13 @@ class UserServiceImpl(
                 password = bCryptPasswordEncoder.encode(password)
             )
         )
+    }
+
+    override fun signIn(username: String, password: String): User {
+        val findUser = userRepository.findByUsername(username)
+
+        require(findUser != null && bCryptPasswordEncoder.matches(password, findUser.password)) { throw BadCredentialsException("아이디나 비밀번호를 확인해주세요.") }
+
+        return findUser
     }
 }
