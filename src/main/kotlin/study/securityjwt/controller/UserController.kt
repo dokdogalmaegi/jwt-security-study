@@ -28,14 +28,14 @@ class UserController(
     }
 
     @PostMapping("/signin")
-    fun signIn(@RequestBody userRequest: UserRequest): String {
+    fun signIn(@RequestBody userRequest: UserRequest): Token {
         val (username, password) = userRequest
 
         logger.info { "$username 님이 로그인 시도 중" }
 
         val user = userService.signIn(username, password)
         val roleListString = user.userRoleList.map { it.value }
-        return jwtConfig.createToken(user.username, roleListString)
+        return Token(jwtConfig.createToken(user.username, roleListString))
     }
 
     @GetMapping("/my")
@@ -60,3 +60,7 @@ class UserController(
         private val logger = KotlinLogging.logger {}
     }
 }
+
+data class Token(
+    val token: String
+)

@@ -1,6 +1,9 @@
 package study.securityjwt.config
 
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.Keys
 import jakarta.annotation.PostConstruct
 import jakarta.servlet.http.HttpServletRequest
@@ -65,8 +68,16 @@ class JwtConfig(
                 Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.toByteArray())).build().parseSignedClaims(token)
 
             return parseSignedClaims.payload.expiration.after(Date())
-        } catch (e: Exception) {
-            logger.error(e) { "validateToken error" }
+        } catch (otherException: Exception) {
+            val errorMessage = when (otherException) {
+                is SecurityException, is MalformedJwtException -> "Invalid JWT Token"
+                is ExpiredJwtException -> "Expired JWT Token"
+                is UnsupportedJwtException -> "Unsupported JWT Token"
+                is IllegalArgumentException -> "JWT claims string is empty"
+                else -> "validateToken error"
+            }
+
+            logger.error(otherException) { errorMessage }
             false
         }
     }
